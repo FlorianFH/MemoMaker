@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 public class PlaceholderFragment extends Fragment {
     /**
      * The fragment argument representing the section number for this
@@ -53,6 +55,8 @@ public class PlaceholderFragment extends Fragment {
             listViewtodo = (ListView) rootView.findViewById(R.id.listViewTodo);
             listViewmemo = (ListView) rootView.findViewById(R.id.listViewMemo);
 
+
+
             //TEST-Array mit Daten für die Listview
             values = new String[]{
                     "Neue Activity starten",
@@ -86,11 +90,11 @@ public class PlaceholderFragment extends Fragment {
 
             //Adapter für To-Do definieren
             //Kontext, Layout je Reihe, ID der TextView mit den Daten, Arraydaten
-            ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getContext(),android.R.layout.simple_list_item_1,
+            ArrayAdapter<String> adapter1 = new ArrayAdapter<>(getContext(),android.R.layout.simple_list_item_1,
                     android.R.id.text1, values);
 
             //Adapter für MemoView
-            ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getContext(),
+            ArrayAdapter<String> adapter2 = new ArrayAdapter<>(getContext(),
                     android.R.layout.simple_list_item_1, android.R.id.text1, valuesMemo);
 
             //Array mit Adapter verknüpfen
@@ -137,10 +141,10 @@ public class PlaceholderFragment extends Fragment {
             };
 
 
-            ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(getContext(),
+            ArrayAdapter<String> adapter3 = new ArrayAdapter<>(getContext(),
                     android.R.layout.simple_list_item_1, android.R.id.text1, archiveTodoArray);
 
-            ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(getContext(),
+            ArrayAdapter<String> adapter4 = new ArrayAdapter<>(getContext(),
                     android.R.layout.simple_list_item_1, android.R.id.text1, archiveMemoArray);
 
             //Array mit Adapter verknüpfen
@@ -148,8 +152,6 @@ public class PlaceholderFragment extends Fragment {
             listViewArchivMemo.setAdapter(adapter4);
         }//Ende If ARCHIVE List-View
 
-        //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-        //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
 
         return rootView;
     }

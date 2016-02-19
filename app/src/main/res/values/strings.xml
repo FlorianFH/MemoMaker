@@ -3,5 +3,10 @@
     <string name="action_settings">Settings</string>
     <string name="title_section1">Aktuell</string>
     <string name="title_section2">Archive</string>
+    <string name="todos">TODOs</string>
+    <string name="memos">MEMO</string>
+    <string name="hintmemo">Dein Memo hier</string>
+    <string name="hinttodo">Deine Aufgabe hier</string>
+    <string name="add">Speichern</string>
     <string name="section_format">Hello World from section: %1$d</string>
 </resources>
