@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 
 import android.support.v4.app.Fragment;
@@ -52,20 +51,20 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+
         //FLOATING ACTION BUTTON
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent explicitIntentMemo = new Intent (MainActivity.this, NeuesMemoActivity.class);
-                startActivity(explicitIntentMemo);
+                Intent explicitIntentSelection = new Intent (MainActivity.this, NeuanlageAuswahl.class);
+                startActivity(explicitIntentSelection);
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                   //      .setAction("Action", null).show();
             }
         });
 
-
-    }
+    }//Ende onCreate
 
 
     @Override
@@ -74,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -88,8 +88,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
+    }//Ende onOptionsItemSelected
 
 
     /**
@@ -105,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
             mContext = context;
         }
 
+
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
@@ -113,13 +113,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
         //Anzahl der Tabs
         @Override
         public int getCount() {
             // Show 2 total pages.
-            return 2;
+            return 3;
         }
+
 
         //Titel der Tabs
         @Override
@@ -130,10 +130,12 @@ public class MainActivity extends AppCompatActivity {
                     return mContext.getString(R.string.title_section1).toUpperCase(l);
                 case 1:
                     return mContext.getString(R.string.title_section2).toUpperCase(l);
+                case 2:
+                    return mContext.getString(R.string.title_section3).toUpperCase(l);
             }
             return null;
-        }
+        }//Ende getPageTitle
 
+    }//Ende SectionPagerAdapter-Klasse
 
-    }
 }
