@@ -177,7 +177,7 @@ public class PlaceholderFragment extends Fragment {
         try {
             mydb = getActivity().openOrCreateDatabase(DBMEMO, Context.MODE_PRIVATE, null);
             Cursor allrows = mydb.rawQuery("select * from " + TABLE + " where TYPE = 'memo' and ARCHIVE = 0 " +
-                    "order by PRIORITY, DESCRIPTION", null);
+                    "order by DATEMEMO, DESCRIPTION", null);
             Integer cindex = allrows.getColumnIndex("DATEMEMO");
             Integer cindex1 = allrows.getColumnIndex("DESCRIPTION");
             mmData = new String[allrows.getCount()];
@@ -239,7 +239,7 @@ public class PlaceholderFragment extends Fragment {
         try {
             mydb = getActivity().openOrCreateDatabase(DBMEMO, Context.MODE_PRIVATE, null);
             Cursor allrows = mydb.rawQuery("select * from " + TABLE + " where TYPE = 'memo' and ARCHIVE = 1 " +
-                    "order by PRIORITY, DESCRIPTION", null);
+                    "order by DATEMEMO, DESCRIPTION", null);
             Integer cindex = allrows.getColumnIndex("DATEMEMO");
             Integer cindex1 = allrows.getColumnIndex("DESCRIPTION");
             mmData = new String[allrows.getCount()];
