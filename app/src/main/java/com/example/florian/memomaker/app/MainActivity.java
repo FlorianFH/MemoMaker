@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
+
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,19 +52,6 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
-
-        //FLOATING ACTION BUTTON
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent explicitIntentSelection = new Intent (MainActivity.this, NeuanlageAuswahl.class);
-                startActivity(explicitIntentSelection);
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                  //      .setAction("Action", null).show();
-            }
-        });
 
     }//Ende onCreate
 
@@ -137,5 +126,24 @@ public class MainActivity extends AppCompatActivity {
         }//Ende getPageTitle
 
     }//Ende SectionPagerAdapter-Klasse
+
+    public void fab(View v){
+
+        switch (v.getId()){
+
+            case R.id.addNewMemo:
+                Intent explicitIntentNeuesMemo = new Intent (this, NeuesMemoActivity.class);
+                startActivity(explicitIntentNeuesMemo);
+                break;
+
+            case R.id.addNewTodo:
+                Intent explicitIntentNeueTodo = new Intent (this, NeueTodoActivity.class);
+                startActivity(explicitIntentNeueTodo);
+                break;
+
+            default:
+                break;
+        }
+    }//Ende fab-Methode
 
 }

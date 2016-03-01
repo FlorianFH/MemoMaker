@@ -25,7 +25,6 @@ public class NeueTodoActivity extends AppCompatActivity{
     private String textPrio;
     private String text;
     EditText editText;
-    Button saveButton;
     public static final String MY_PREFS_NAME = "InstantSaveTodo";
 
 
@@ -35,7 +34,6 @@ public class NeueTodoActivity extends AppCompatActivity{
         textPrio = prio.getText().toString();
 
         editText = (EditText)findViewById(R.id.newTodo);
-        saveButton = (Button)findViewById(R.id.savebutton);
 
         text = editText.getText().toString();
     }//Ende updateProperties
@@ -65,7 +63,6 @@ public class NeueTodoActivity extends AppCompatActivity{
         prio.setText(textPrio);
 
         editText = (EditText) findViewById(R.id.newTodo);
-        saveButton = (Button)findViewById(R.id.savebutton);
 
         editText.setText(text);
     }//Ende loadSettings
@@ -90,7 +87,6 @@ public class NeueTodoActivity extends AppCompatActivity{
         super.onCreate(saveInstanceState);
         setContentView(R.layout.add_new_todoitem);
 
-        final Button saveButton = (Button) findViewById(R.id.savebutton);
         EditText editText = (EditText) findViewById(R.id.newTodo);
 
         // Test löschen DB
@@ -104,18 +100,6 @@ public class NeueTodoActivity extends AppCompatActivity{
             public void onClick(View v) {
                 updateProperties();
                 saveSettings();
-            }
-        });
-
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
-                saveSettings();
-                inserIntoTable();
-                finish();
-                Toast.makeText(getApplicationContext(), "Eintrag gespeichert", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -173,6 +157,14 @@ public class NeueTodoActivity extends AppCompatActivity{
             Toast.makeText(getApplicationContext(), "Fehler beim Loeschen der Datenbank", Toast.LENGTH_LONG).show();
         }
     }//Ende dropTable
+
+
+    public void save (View v){
+        saveSettings();
+        inserIntoTable();
+        finish();
+        Toast.makeText(getApplicationContext(), "Eintrag gespeichert", Toast.LENGTH_LONG).show();
+    }
 
 }
 

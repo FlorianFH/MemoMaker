@@ -134,6 +134,11 @@ public class PlaceholderFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        setMenuVisibility(true);
+    }
 
     //DB
     public String[] loadTodoData() {
@@ -256,5 +261,47 @@ public class PlaceholderFragment extends Fragment {
         }
         return mmData;
     }//Ende loadMemoDataArchiv
+
+
+    @Override
+    public void setMenuVisibility (final boolean visible){
+        super.setMenuVisibility(visible);
+
+        if(getActivity() != null){
+
+            if (visible) {
+                if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+                    values = loadTodoData();
+                    ArrayAdapter<String> adapter1 = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1,
+                            android.R.id.text1, values);
+                    listViewtodo.setAdapter(adapter1);
+                }
+            }
+
+            if (visible) {
+                if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
+                    valuesMemo = loadMemoData();
+                    ArrayAdapter<String> adapter2 = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1,
+                            android.R.id.text1, valuesMemo);
+                    listViewmemo.setAdapter(adapter2);
+                }
+            }
+
+            if (visible) {
+                if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
+                    archiveTodoArray = loadTodoDataArchive();
+                    ArrayAdapter<String> adapter3 = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1,
+                            android.R.id.text1, archiveTodoArray);
+                    listViewArchivTodo.setAdapter(adapter3);
+
+                    archiveMemoArray = loadMemoDataArchive();
+                    ArrayAdapter<String> adapter4 = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1,
+                            android.R.id.text1, archiveMemoArray);
+                    listViewArchivMemo.setAdapter(adapter4);
+                }
+            }
+
+        }
+    }
 
 }

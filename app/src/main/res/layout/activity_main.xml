@@ -17,12 +17,12 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         android:paddingTop="@dimen/appbar_padding_top">
 
-    <android.support.design.widget.TabLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:id="@+id/tabs"/>
+        <android.support.design.widget.TabLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/tabs"/>
 
-</android.support.design.widget.AppBarLayout>
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
         android:layout_height="match_parent"
@@ -30,14 +30,43 @@
         android:id="@+id/container"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:layout_height="wrap_content"
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/left_labels"
         android:layout_width="wrap_content"
-        android:id="@+id/fab"
-        app:backgroundTint="@color/red"
-        android:focusable="true"
-        android:src="@drawable/ic_add_circle_white_36pt"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_gravity="end|bottom"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="@dimen/fab_margin"
+        android:layout_marginStart="@dimen/fab_margin"
+        android:layout_gravity="end|bottom"
+        fab:fab_addButtonColorNormal="@color/red"
+        fab:fab_addButtonColorPressed="@color/white_pressed"
+        fab:fab_addButtonPlusIconColor="@color/whiteColor"
+        fab:fab_addButtonSize="normal"
+        fab:fab_labelStyle="@style/menu_labels_style"
+        fab:fab_labelsPosition="left">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/addNewTodo"
+            fab:fab_colorNormal="@color/red"
+            fab:fab_size="mini"
+            fab:fab_title="@string/addtodo"
+            fab:fab_colorPressed="@color/white_pressed"
+            android:onClick="fab"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/addNewMemo"
+            fab:fab_colorNormal="@color/red"
+            fab:fab_size="mini"
+            fab:fab_title="@string/addmemo"
+            fab:fab_colorPressed="@color/white_pressed"
+            android:onClick="fab"/>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </android.support.design.widget.CoordinatorLayout>
