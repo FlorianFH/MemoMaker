@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <android.support.design.widget.CoordinatorLayout
-
     android:orientation="vertical"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
@@ -37,21 +36,20 @@
 
         </android.support.design.widget.AppBarLayout>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titletextViewMemo"
+            android:id="@+id/memoDate"
+            android:text="@string/memodate"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/titletextViewMemo"
-        android:id="@+id/memoDate"
-        android:text="@string/memodate"/>
-
-    <EditText
+        <EditText
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/newMemo"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_below="@id/memoDate"
-        android:layout_weight="9"
+        android:layout_weight="6"
         android:hint="@string/hintmemo"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"

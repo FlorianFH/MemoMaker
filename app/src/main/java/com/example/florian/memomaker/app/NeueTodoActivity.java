@@ -4,15 +4,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
+
 import android.view.View;
-import android.widget.Button;
+
 import android.widget.EditText;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 /**
- * Created by Studium on 20.02.2016.
+ * Created by Sebastian on 20.02.2016.
  */
 public class NeueTodoActivity extends AppCompatActivity{
 
@@ -48,7 +48,7 @@ public class NeueTodoActivity extends AppCompatActivity{
         edit.putString("KEY_TEXT", text);
         //Datum
         edit.putString("KEY_PRIO", textPrio);
-        edit.commit();
+        edit.apply();
     }//Ende saveSettings
 
 
@@ -126,16 +126,6 @@ public class NeueTodoActivity extends AppCompatActivity{
             mydb = openOrCreateDatabase(DBMEMO, Context.MODE_PRIVATE, null);
             mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
                     "VALUES('todo', '' , '" + textPrio + "', '" + text + "', 0)");
-            /* Testdaten
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                            "VALUES('todo', '' , 'A', 'Testtodo1',0)");
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                    "VALUES('todo', '' , 'A', 'Testtodo2',0)");
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                    "VALUES('todo', '' , 'A', 'Testtodo3',0)");
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                    "VALUES('todo', '' , 'A', 'Testtodo4',0)");
-            */
             mydb.close();
 
             Toast.makeText(getApplicationContext(), "Speichern erfolgreich", Toast.LENGTH_LONG).show();

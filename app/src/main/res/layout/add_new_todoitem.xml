@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <android.support.design.widget.CoordinatorLayout
     android:orientation="vertical"
     android:layout_height="wrap_content"
