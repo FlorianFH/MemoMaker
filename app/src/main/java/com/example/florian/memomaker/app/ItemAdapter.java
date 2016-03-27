@@ -3,9 +3,6 @@ package com.example.florian.memomaker.app;
 /**
  * Created by Sebastian on 09.03.2016.
  */
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,6 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 public class ItemAdapter extends ArrayAdapter<ListViewItem> {
 
@@ -61,26 +62,33 @@ public class ItemAdapter extends ArrayAdapter<ListViewItem> {
             // This is how you obtain a reference to the TextViews.
             // These TextViews are created in the XML files we defined.
 
-            TextView tid = (TextView) v.findViewById(R.id.id_lvr1);
+            TextView itemID = (TextView) v.findViewById(R.id.id_lvr1);
             TextView tkatdat = (TextView) v.findViewById(R.id.lb_katdat);
-            TextView tiname = (TextView) v.findViewById(R.id.lb_text1);
-            TextView tat = (TextView) v.findViewById(R.id.at_cbox_value);
-            CheckBox bt = (CheckBox) v.findViewById(R.id.checkBox1);
+            TextView itemDescription = (TextView) v.findViewById(R.id.lb_text1);
+            TextView attributeCheckboxValue = (TextView) v.findViewById(R.id.at_cbox_value);
+            CheckBox checkBoxButton = (CheckBox) v.findViewById(R.id.checkBox1);
 
 
             // check to see if each individual textview is null.
             // if not, assign some text!
-            if (tid != null){
-                tid.setText(i.getIdToString());
+            if (itemID != null){
+                itemID.setText(i.getIdToString());
             }
             if (tkatdat != null){
-                tkatdat.setText(i.getKatDat());
+                tkatdat.setText(i.getDatum());
             }
-            if (tiname != null){
-                tiname.setText(i.getName());
+            if (itemDescription != null){
+                itemDescription.setText(i.getDescription());
             }
-            if (tat != null){
-                tat.setText(i.getArchiveTagToString());
+            if (attributeCheckboxValue != null){
+                attributeCheckboxValue.setText(i.getArchiveTagToString());
+            }
+            if (checkBoxButton != null){
+                if (i.getCheckbox()){
+                    checkBoxButton.setChecked(true);
+                }else{
+                    checkBoxButton.setChecked(false);
+                }
             }
 
         }
@@ -88,7 +96,7 @@ public class ItemAdapter extends ArrayAdapter<ListViewItem> {
         // the view must be returned to our activity
         return v;
 
-    }
+    }//Ende getView
 
 
     //Additions
@@ -96,7 +104,6 @@ public class ItemAdapter extends ArrayAdapter<ListViewItem> {
 
 
     public void setNewSelection(int position, boolean value) {
-
         mSelection.put(position, value);
     }
 

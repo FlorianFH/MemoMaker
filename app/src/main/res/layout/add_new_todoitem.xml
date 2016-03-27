@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <android.support.design.widget.CoordinatorLayout
     android:orientation="vertical"
     android:layout_height="wrap_content"
@@ -6,59 +7,99 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-        <LinearLayout
+    <LinearLayout
         android:weightSum="10"
         android:orientation="vertical"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         xmlns:android="http://schemas.android.com/apk/res/android">
 
-            <android.support.design.widget.AppBarLayout
+        <android.support.design.widget.AppBarLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/appbar"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            android:paddingTop="@dimen/appbar_padding_top">
+
+            <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:id="@+id/appbar"
-                android:theme="@style/AppTheme.AppBarOverlay"
-                android:paddingTop="@dimen/appbar_padding_top">
+                android:layout_marginBottom="30dp"
+                android:singleLine="true"
+                android:layout_gravity="start"
+                android:background="@color/colorPrimary"
+                android:id="@+id/titletextViewTodo"
+                android:text="@string/todos"
+                android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        </android.support.design.widget.AppBarLayout>
 
         <TextView
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_marginBottom="30dp"
+            android:layout_width="wrap_content"
             android:singleLine="true"
             android:layout_gravity="start"
-            android:background="@color/colorPrimary"
-            android:id="@+id/titletextViewTodo"
-            android:text="@string/todos"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:id="@+id/titletextTodoPrio"
+            android:text="@string/todoprio"
             android:textAppearance="?android:attr/textAppearanceLarge"/>
 
-            </android.support.design.widget.AppBarLayout>
 
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:singleLine="true"
-        android:layout_gravity="start"
-        android:id="@+id/titletextTodoPrio"
-        android:text="@string/todoprio"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:orientation="horizontal"
+            android:id="@+id/id_radio_group1"
+            android:checkedButton="@+id/radioButton1">
 
-    <EditText
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:id="@+id/prio"
-        android:ems="2"
-        android:inputType="textCapCharacters"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="32dp"
+                android:text="A"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/radioButton1" />
 
-    <EditText
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/newTodo"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_weight="9"
-        android:hint="@string/hinttodo"
-        android:editable="true"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="32dp"
+                android:text="B"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/radioButton2" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="32dp"
+                android:text="C"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/radioButton3" />
+
+        </RadioGroup>
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:singleLine="true"
+            android:layout_gravity="start"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:id="@+id/textTodoPrio"
+            android:text="@string/text"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/newTodo"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_weight="9"
+            android:hint="@string/hinttodo"
+            android:editable="true"/>
 
     </LinearLayout>
 

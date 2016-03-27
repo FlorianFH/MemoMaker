@@ -3,19 +3,19 @@ package com.example.florian.memomaker.app;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v7.app.AppCompatActivity;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.io.File;
 import java.util.Locale;
@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private static String DBMEMO = "memomaker.db";
     private static String TABLE = "mmdata";
+    private FloatingActionsMenu floatingActionMenu;
     SQLiteDatabase mydb;
 
 
@@ -54,27 +55,38 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        floatingActionMenu = (FloatingActionsMenu) findViewById(R.id.left_labels);
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+
+        //Intent der Notification
+        Intent intent = getIntent();
+
+        //Falls die App durch eine Notification geöffnet wird,
+        //wird sie direkt auf der Memo-Tab geöffnet
+        if(intent.getExtras() != null){
+            int  sectionNumber = intent.getExtras().getInt(PlaceholderFragment.ARG_SECTION_NUMBER);
+            tabLayout.getTabAt(sectionNumber).select();
+        }
+
+        //Falls noch keine Datenbank existiert wird eine angelegt
         boolean checkDB = doesDatabaseExist(getApplicationContext(), DBMEMO);
         if (!checkDB) {
             createTable();
         }
-
-        // Testdaten archiv generieren
-        //generateTestdataArchiv();
-
     }//Ende onCreate
 
 
-    // Check if DB exists
+    // Prüfe ob eine Datenbank existiert
     private static boolean doesDatabaseExist(Context context, String dbName) {
         File dbFile = context.getDatabasePath(dbName);
         return dbFile.exists();
     }
 
 
+    //Actionbar-Menu erzeugen
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -112,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
             mContext = context;
         }
 
-
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
@@ -120,14 +131,12 @@ public class MainActivity extends AppCompatActivity {
             return PlaceholderFragment.newInstance(position + 1);
         }
 
-
         //Anzahl der Tabs
         @Override
         public int getCount() {
             // Show 3 total pages.
             return 3;
         }
-
 
         //Titel der Tabs
         @Override
@@ -147,7 +156,11 @@ public class MainActivity extends AppCompatActivity {
     }//Ende SectionPagerAdapter-Klasse
 
 
+    //FloatingActionMenu mit Buttons
     public void fab(View v){
+
+        //Nach dem Klick auf einen der Button wird das FloatingActionMenu geschlossen
+        floatingActionMenu.collapse();
 
         switch (v.getId()){
 
@@ -175,60 +188,9 @@ public class MainActivity extends AppCompatActivity {
                     "DATEMEMO DATE, PRIORITY CHAR, DESCRIPTION TEXT, ARCHIVE INTEGER);");
             mydb.close();
 
-            //Toast.makeText(getApplicationContext(), "Erstellen erfolgreich", Toast.LENGTH_LONG).show();
         } catch(Exception e) {
             Toast.makeText(getApplicationContext(), "Fehler beim Erstellen der Datenbank", Toast.LENGTH_LONG).show();
         }
     }//Ende createTable
-
-
-    public void dropTable() {
-        try {
-            mydb = openOrCreateDatabase(DBMEMO, Context.MODE_PRIVATE, null);
-            //String test = ("DROP " + TABLE);
-            mydb.execSQL("DROP TABLE " + TABLE);
-            mydb.close();
-
-            Toast.makeText(getApplicationContext(), "Loeschen erfolgreich", Toast.LENGTH_LONG).show();
-        } catch(Exception e) {
-            Toast.makeText(getApplicationContext(), "Fehler beim Loeschen der Datenbank", Toast.LENGTH_LONG).show();
-        }
-    }//Ende dropTable
-
-
-    // Generieren von Testdaten fuers Archiv
-    public void generateTestdataArchiv() {
-        try {
-            mydb = openOrCreateDatabase(DBMEMO, Context.MODE_PRIVATE, null);
-            //mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-            //        "VALUES('todo', '' , '" + textPrio + "', '" + text + "', 0)");
-
-            // Testdaten TodoArchiv
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                    "VALUES('todo', '' , 'A', 'Testtodo1',1)");
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                    "VALUES('todo', '' , 'A', 'Testtodo2',1)");
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                    "VALUES('todo', '' , 'A', 'Testtodo3',1)");
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                    "VALUES('todo', '' , 'A', 'Testtodo4',1)");
-
-            // Testdaten MemoArchiv
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                    "VALUES('memo', '26042006' , '', 'Testmemo1',1)");
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                    "VALUES('memo', '21052006' , '', 'Testmemo1',1)");
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                    "VALUES('memo', '14062006' , '', 'Testmemo3',1)");
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                    "VALUES('memo', '25062006' , '', 'Testmemo4',1)");
-
-            mydb.close();
-
-            Toast.makeText(getApplicationContext(), "Testdaten generiert", Toast.LENGTH_LONG).show();
-        } catch(Exception e) {
-            Toast.makeText(getApplicationContext(), "Fehler beim Erstellen der Testdaten Archiv", Toast.LENGTH_LONG).show();
-        }
-    }//Ende instertIntoTable TESTARCHIVE
 
 }

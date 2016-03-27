@@ -60,7 +60,7 @@
         android:layout_width="match_parent"
         android:isScrollContainer="true"
         android:layout_weight="1"
-        android:id="@+id/listViewMemoArchiv"
+        android:id="@+id/listViewMemoArchive"
         android:choiceMode="singleChoice"
         tools:listitem="@layout/listview_row"
         android:nestedScrollingEnabled="false"/>

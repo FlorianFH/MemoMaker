@@ -1,34 +1,24 @@
 package com.example.florian.memomaker.app;
 
 
-import android.annotation.TargetApi;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-
-import android.database.sqlite.SQLiteDatabase;
-
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.support.v4.app.TaskStackBuilder;
-
-
 
 import org.joda.time.DateTime;
 
 import java.util.Calendar;
-
 
 
 /**
@@ -37,48 +27,86 @@ import java.util.Calendar;
 public class NeuesMemoActivity extends AppCompatActivity {
 
     //DB
-    SQLiteDatabase mydb;
-    private static String DBMEMO = "memomaker.db";
-    private static String TABLE = "mmdata";
+    DBManager dbManager;
 
     // Variablen für DatePicker
     private String textDate;
     int year;
     int month;
     int day;
-    DateTime currentDate, futureDate;
+    DateTime currentDate;
     static final int DATE_DIALOG_ID = 999;
-
-    //Variablen für die Notification
-    NotificationManager notificationManager;
-    boolean isNotificActive = false;
-    int notifyID = 33;
 
     //Variablen
     private String text;
     EditText editText;
     Button dateButton;
+    DateTime today;
 
     public static final String MY_PREFS_NAME = "InstantSave";
 
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        saveSettings();
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadSettings();
+    }
+
+
+    @Override
+    protected void onCreate(Bundle saveInstanceState) {
+        super.onCreate(saveInstanceState);
+        setContentView(R.layout.add_new_memoitem);
+
+        //Erzeugen eines DatenbankManagers
+        dbManager = new DBManager(this);
+
+        EditText editText = (EditText) findViewById(R.id.newMemo);
+        dateButton = (Button) findViewById(R.id.memoDate);
+        today = new DateTime(System.currentTimeMillis());
+        loadSettings();
+
+        editText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateProperties();
+                saveSettings();
+            }
+        });
+
+        //OnClick für den DatePickerDialog
+        dateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(DATE_DIALOG_ID);
+            }
+        });
+
+    }//ENDE onCreate
+
+
+    //Update der Shared Preferences
     private void updateProperties() {
 
         editText = (EditText) findViewById(R.id.newMemo);
         dateButton = (Button) findViewById(R.id.memoDate);
 
         //Wenn noch kein Datum gesetzt ist, wird das Datum in einer Woche gewählt
-        if (day == 0 && month == 0 && year == 0) {
-            futureDate = rememberWeek();
-            day = futureDate.getDayOfMonth();
-            month = futureDate.getMonthOfYear();
-            year = futureDate.getYear();
+        if (currentDate == null) {
+            rememberWeek();
             //Toast kann später raus
-            Toast.makeText(getApplicationContext(), "Zukunft gesetzt", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Zukunft gesetzt", Toast.LENGTH_SHORT).show();
         }
 
         // Datum als String speichern
-        textDate = day + "." + month + "." + year;
+        textDate = String.valueOf(currentDate.getMillis());
 
         // Textfeld
         text = editText.getText().toString();
@@ -111,49 +139,7 @@ public class NeuesMemoActivity extends AppCompatActivity {
     }//Ende loadSettings
 
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        saveSettings();
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        loadSettings();
-    }
-
-
-    @Override
-    protected void onCreate(Bundle saveInstanceState) {
-        super.onCreate(saveInstanceState);
-        setContentView(R.layout.add_new_memoitem);
-
-        EditText editText = (EditText) findViewById(R.id.newMemo);
-        Button dateButton = (Button) findViewById(R.id.memoDate);
-
-        loadSettings();
-
-        editText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateProperties();
-                saveSettings();
-            }
-        });
-
-        dateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialog(DATE_DIALOG_ID);
-            }
-        });
-
-    }//ENDE onCreate
-
-
-    //DatePicker
+    //Erzeugen eines Dialogs
     @Override
     protected Dialog onCreateDialog(int id) {
 
@@ -166,7 +152,9 @@ public class NeuesMemoActivity extends AppCompatActivity {
         //Aufruf eines DatePickerDialogs
         switch (id) {
             case DATE_DIALOG_ID:
-                return new DatePickerDialog(this, datePicker, year, month, day);
+                DatePickerDialog dialog =  new DatePickerDialog(this, datePicker, year, month, day);
+                dialog.getDatePicker().setMinDate(new DateTime().getMillis());
+                return dialog;
         }
         return null;
     }//Ende onCreateDialog
@@ -177,131 +165,89 @@ public class NeuesMemoActivity extends AppCompatActivity {
 
         public void onDateSet(DatePicker view, int selectedYear,
                               int selectedMonth, int selectedDay) {
-            //Das vom User gewuenschte Datum abspeichern
+
+            //Das vom User gewuenschte Datum im Kalenderformat abspeichern
             year = selectedYear;
             month = selectedMonth;
-            month = month + 1;
             day = selectedDay;
+            Calendar c = Calendar.getInstance();
+            c.set(year,month,day);
+
+            int localMonth = month+1;
+            //Zeitstempel erfassen
+            currentDate = new DateTime(c.getTimeInMillis());
+
+            //Gewähltes Datum auf dem Buton anzeigen
+            dateButton.setText(getString(R.string.memodate)+" "+day + "." + localMonth + "." + year);
         }
     };//Ende private DatePickerDialog
 
 
     //Ab in die Zukunft
-    public DateTime rememberWeek() {
-
+    public void rememberWeek() {
         //Aktuelles Datum mittels Joda-Time um eine Woche nach vorne verschieben
-        currentDate = new DateTime();
+        currentDate = today;
         currentDate = currentDate.plusDays(7);
-        return currentDate;
     }
-
-
-    public void createTable() {
-
-        try {
-            mydb = openOrCreateDatabase(DBMEMO, Context.MODE_PRIVATE, null);
-            mydb.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE + " (ID INTEGER PRIMARY KEY, TYPE TEXT, " +
-                    "DATEMEMO DATE, PRIORITY CHAR, DESCRIPTION TEXT, ARCHIVE INTEGER);");
-            mydb.close();
-
-            Toast.makeText(getApplicationContext(), "Erstellen erfolgreich", Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Fehler beim Erstellen der Datenbank", Toast.LENGTH_LONG).show();
-        }
-    }//Ende createTable
-
-
-    public void inserIntoTable() {
-        try {
-            mydb = openOrCreateDatabase(DBMEMO, Context.MODE_PRIVATE, null);
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                    "VALUES('memo', '" + textDate + "' , '', '" + text + "', 0)");
-            /* Testdaten
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                            "VALUES('todo', '' , 'A', 'Testtodo1', 0)");
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                    "VALUES('todo', '' , 'A', 'Testtodo2', 0)");
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                    "VALUES('todo', '' , 'A', 'Testtodo3', 0)");
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                    "VALUES('todo', '' , 'A', 'Testtodo4', 0)");
-            */
-            mydb.close();
-
-            Toast.makeText(getApplicationContext(), "Speichern erfolgreich", Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Fehler beim Erstellen der Datenbank", Toast.LENGTH_LONG).show();
-        }
-    }//Ende insertIntoTable
-
-
-    public void dropTable() {
-        try {
-            mydb = openOrCreateDatabase(DBMEMO, Context.MODE_PRIVATE, null);
-            //String test = ("DROP " + TABLE);
-            mydb.execSQL("DROP TABLE " + TABLE);
-            mydb.close();
-
-            Toast.makeText(getApplicationContext(), "Loeschen erfolgreich", Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Fehler beim Loeschen der Datenbank", Toast.LENGTH_LONG).show();
-        }
-    }//Ende dropTable
 
 
     public void save(View v) {
         saveSettings();
-        inserIntoTable();
+        ListViewItem item = new ListViewItem(0,ListViewItem.TYP_MEMO,textDate,text, 0);
+        item = dbManager.insertData(item);
         finish();
-        showNotification();
-        Toast.makeText(getApplicationContext(), "Eintrag gespeichert", Toast.LENGTH_LONG).show();
+        notifyAtTime(item);
+        clear();
+        Toast.makeText(getApplicationContext(), "Eintrag gespeichert", Toast.LENGTH_SHORT).show();
     }
 
 
-    //Errinnerung das eine Memo abgearbeitet werden muss
-    @TargetApi(16)
-    public void showNotification() {
+    //Methode zum zurücksetzen der Variablen
+    public void clear(){
+        text = "";
+        textDate ="";
+        editText.setText("");
+    }
 
-//        mydb = openOrCreateDatabase(DBMEMO, Context.MODE_PRIVATE, null);
-//
-//        Cursor allrows = mydb.rawQuery("select DESCRIPTION from " + TABLE + " where TYPE = 'memo' and ARCHIVE = 0 and DATEMEMO = " + currentDate, null);
-//
-//        Integer cindex1 = allrows.getColumnIndex("DESCRIPTION");
-//
-//        String inhalt = allrows.getString(cindex1);
-//
-//        mydb.close();
 
-        NotificationCompat.Builder notificationBuilder = new
-                NotificationCompat.Builder(this)
-                .setContentTitle("Deine Memo wird fällig...")
-                .setContentText("inhalt")//TODO: hier soll der eigentliche Inhalt der Memo aus der Datenbank stehen
-                .setTicker("Alert Memo")
-                .setSmallIcon(R.drawable.ic_assignment_late_24dp);
+    //Seten eines Alarms, der eine Notification auslöst
+    public void notifyAtTime(ListViewItem item){
 
-        Intent intent = new Intent(this, MainActivity.class);
+        //Spezifischer Intnet mit dem entsprechenden Datensatz für den AlarmReceiver
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        intent.putExtra(AlarmReceiver.KS_DESCRIPTION,item.getDescription());
+        intent.putExtra(AlarmReceiver.KS_NOTIFYID, item.getId());
 
-        /*
-        * Der TaskStackBuilder sorgt dafür das nach dem anklicken der Notification der User
-        * in der App bleibt und diese nicht direkt geschlossen wird wenn der Zurück-Button
-        * betätigt wird.*/
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
-        taskStackBuilder.addParentStack(MainActivity.class);
-        taskStackBuilder.addNextIntent(intent);
+        //Alarm löst den PendingIntent aus dem Hintergrund aus
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) System.currentTimeMillis(), intent, 0);
+        //setzen des Alarmdatums
+        int alarmTimeYear = currentDate.getYear();
+        int alarmTimeMonth = currentDate.getMonthOfYear();
+        int alarmTimeDay = currentDate.getDayOfMonth();
 
-        //Der PendingIntent öffnet die App wenn die Notification angeklickt wird.
-        PendingIntent pIntent = taskStackBuilder.getPendingIntent(0,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        //setzen des Alarmdatums für den aktuellen Tag
+        int alarmTimeYesterdayYear = currentDate.minusDays(1).getYear();
+        int alarmTimeYesterdayMonth = currentDate.minusDays(1).getMonthOfYear();
+        int alarmTimeYesterdayDay = currentDate.minusDays(1).getDayOfMonth();
 
-        notificationBuilder.setContentIntent(pIntent);
+        //setzen des aktuellen Systemdatums
+        int todayTimeYear = today.getYear();
+        int todayTimeMonth = today.getMonthOfYear();
+        int todayTimeDay = today.getDayOfMonth();
 
-        //Nach dem anklicken der Notification wird diese beendet und nicht weiter angezeigt
-        notificationBuilder.setAutoCancel(true);
-
-        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(notifyID, notificationBuilder.build());
-
-        isNotificActive = true;
-    }//Ende showNotification
+        //Wenn Datum heute, Erinnerung in einer Stunde
+        if(alarmTimeDay == todayTimeDay && alarmTimeMonth == todayTimeMonth && alarmTimeYear == todayTimeYear) {
+            currentDate = currentDate.plusHours(1);
+        }       //Wenn Datum morgen, Erinnerung 12 Stunden vor Fälligkeit
+        else if(alarmTimeYesterdayDay == todayTimeDay && alarmTimeYesterdayMonth == todayTimeMonth
+                && alarmTimeYesterdayYear == todayTimeYear) {
+            currentDate = currentDate.minusHours(12);
+        }
+        else {//Wenn Datum gesetzt, Erinnerung einen Tag vorher
+            currentDate = currentDate.minusDays(1);
+        }
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC, currentDate.getMillis(), pendingIntent);
+    }//Ende notifyAtTime
 
 }

@@ -7,7 +7,7 @@
     <string name="todoprio">Priorität:</string>
     <string name="todos">TODOs</string>
     <string name="memos">MEMO</string>
-    <string name="memodate">Datum:</string>
+    <string name="memodate">Erinnerungsdatum:</string>
     <string name="hintmemo">Dein Memo hier</string>
     <string name="hinttodo">Deine Aufgabe hier</string>
     <string name="add">Speichern</string>
@@ -15,5 +15,10 @@
     <string name="select_new">Erstelle neue...</string>
     <string name="addmemo">Memo</string>
     <string name="addtodo">ToDo</string>
+    <string name="delete_ok">Löschen</string>
+    <string name="delete_cancel">Abbrechen</string>
+    <string name="dialog_ds_delete">Soll der ausgewählte Eintrag wirklich gelöscht werden?</string>
+    <string name="del_dialog_title">Löschen</string>
+    <string name="text">Text:</string>
 
 </resources>

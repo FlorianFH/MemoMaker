@@ -2,14 +2,15 @@ package com.example.florian.memomaker.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-
-import android.view.View;
-
-import android.widget.EditText;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
+
+import java.util.List;
 
 /**
  * Created by Sebastian on 20.02.2016.
@@ -17,55 +18,21 @@ import android.widget.Toast;
 public class NeueTodoActivity extends AppCompatActivity{
 
     //DB
-    SQLiteDatabase mydb;
-    private static String DBMEMO = "memomaker.db";
-    private static String TABLE = "mmdata";
+    DBManager dbManager;
 
-    EditText prio;
-    private String textPrio;
     private String text;
     EditText editText;
+
+    RadioGroup radioPrioGroup;
+    RadioButton radioButtonA;
+    RadioButton radioButtonB;
+    RadioButton radioButtonC;
+
+    boolean checkedA;
+    boolean checkedB;
+    boolean checkedC;
+
     public static final String MY_PREFS_NAME = "InstantSaveTodo";
-
-
-    private void updateProperties(){
-        // Priorität
-        prio =(EditText)findViewById(R.id.prio);
-        textPrio = prio.getText().toString();
-
-        editText = (EditText)findViewById(R.id.newTodo);
-
-        text = editText.getText().toString();
-    }//Ende updateProperties
-
-
-    private void saveSettings(){
-        updateProperties();
-
-        SharedPreferences shared = getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor edit = shared.edit();
-
-        edit.putString("KEY_TEXT", text);
-        //Datum
-        edit.putString("KEY_PRIO", textPrio);
-        edit.apply();
-    }//Ende saveSettings
-
-
-    private void loadSettings(){
-
-        SharedPreferences shared = getSharedPreferences(MY_PREFS_NAME,Context.MODE_PRIVATE);
-        text = shared.getString("KEY_TEXT","");
-
-        //Datum
-        textPrio = shared.getString("KEY_PRIO","");
-        prio = (EditText) findViewById(R.id.prio);
-        prio.setText(textPrio);
-
-        editText = (EditText) findViewById(R.id.newTodo);
-
-        editText.setText(text);
-    }//Ende loadSettings
 
 
     @Override
@@ -87,13 +54,17 @@ public class NeueTodoActivity extends AppCompatActivity{
         super.onCreate(saveInstanceState);
         setContentView(R.layout.add_new_todoitem);
 
-        EditText editText = (EditText) findViewById(R.id.newTodo);
 
-        // Test löschen DB
-        //dropTable();
+        dbManager = new DBManager(this);
+
+        editText = (EditText) findViewById(R.id.newTodo);
+        radioPrioGroup=(RadioGroup)findViewById(R.id.id_radio_group1);
+
+        radioButtonA = (RadioButton)findViewById(R.id.radioButton1);
+        radioButtonB = (RadioButton)findViewById(R.id.radioButton2);
+        radioButtonC = (RadioButton)findViewById(R.id.radioButton3);
 
         loadSettings();
-        createTable();
 
         editText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,55 +77,96 @@ public class NeueTodoActivity extends AppCompatActivity{
     }//Ende onCreate
 
 
-    //DB
-    public void createTable() {
-        try {
-            mydb = openOrCreateDatabase(DBMEMO, Context.MODE_PRIVATE, null);
-            mydb.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE + " (ID INTEGER PRIMARY KEY, TYPE TEXT, " +
-                    "DATEMEMO DATE, PRIORITY CHAR, DESCRIPTION TEXT, ARCHIVE INTEGER);");
-            mydb.close();
+    private void updateProperties(){
 
-            Toast.makeText(getApplicationContext(), "Erstellen erfolgreich", Toast.LENGTH_LONG).show();
-        } catch(Exception e) {
-            Toast.makeText(getApplicationContext(), "Fehler beim Erstellen der Datenbank", Toast.LENGTH_LONG).show();
+        editText = (EditText)findViewById(R.id.newTodo);
+        text = editText.getText().toString();
+
+        radioButtonA = (RadioButton)findViewById(R.id.radioButton1);
+        checkedA = radioButtonA.isChecked();
+
+        radioButtonB = (RadioButton)findViewById(R.id.radioButton2);
+        checkedB = radioButtonB.isChecked();
+
+        radioButtonC = (RadioButton)findViewById(R.id.radioButton3);
+        checkedC = radioButtonC.isChecked();
+
+    }//Ende updateProperties
+
+
+    private void saveSettings(){
+        updateProperties();
+
+        SharedPreferences shared = getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = shared.edit();
+
+        edit.putString("KEY_TEXT", text);
+
+        edit.putBoolean("PRIO_A", checkedA);
+        edit.putBoolean("PRIO_B", checkedB);
+        edit.putBoolean("PRIO_C", checkedC);
+        edit.apply();
+    }//Ende saveSettings
+
+
+    private void loadSettings(){
+
+        SharedPreferences shared = getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE);
+        text = shared.getString("KEY_TEXT","");
+
+        checkedA =shared.getBoolean("PRIO_A", false);
+        checkedB =shared.getBoolean("PRIO_B", false);
+        checkedC =shared.getBoolean("PRIO_C", false);
+
+        if (checkedA) {
+            radioButtonA.setChecked(true);
         }
-    }//Ende createTable
-
-
-    public void inserIntoTable() {
-        try {
-            mydb = openOrCreateDatabase(DBMEMO, Context.MODE_PRIVATE, null);
-            mydb.execSQL("INSERT INTO " + TABLE + " (TYPE, DATEMEMO, PRIORITY, DESCRIPTION, ARCHIVE) " +
-                    "VALUES('todo', '' , '" + textPrio + "', '" + text + "', 0)");
-            mydb.close();
-
-            Toast.makeText(getApplicationContext(), "Speichern erfolgreich", Toast.LENGTH_LONG).show();
-        } catch(Exception e) {
-            Toast.makeText(getApplicationContext(), "Fehler beim Erstellen der Datenbank", Toast.LENGTH_LONG).show();
+        else if (checkedB) {
+            radioButtonB.setChecked(true);
         }
-    }//Ende instertIntoTable
-
-
-    public void dropTable() {
-        try {
-            mydb = openOrCreateDatabase(DBMEMO, Context.MODE_PRIVATE, null);
-            //String test = ("DROP " + TABLE);
-            mydb.execSQL("DROP TABLE " + TABLE);
-            mydb.close();
-
-            Toast.makeText(getApplicationContext(), "Loeschen erfolgreich", Toast.LENGTH_LONG).show();
-        } catch(Exception e) {
-            Toast.makeText(getApplicationContext(), "Fehler beim Loeschen der Datenbank", Toast.LENGTH_LONG).show();
+        else {
+            radioButtonC.setChecked(true);
         }
-    }//Ende dropTable
+
+        editText = (EditText) findViewById(R.id.newTodo);
+        editText.setText(text);
+
+    }//Ende loadSettings
 
 
     public void save (View v){
         saveSettings();
-        inserIntoTable();
+
+        String prio ="";
+        if (radioButtonA.isChecked()) {
+            prio = "A";
+        }
+        else if (radioButtonB.isChecked()) {
+            prio = "B";
+        }
+        else {
+            prio = "C";
+        }
+
+        ListViewItem item = new ListViewItem(0,ListViewItem.TYP_TODO,"", prio,text, 0);
+        dbManager.insertData(item);
         finish();
-        Toast.makeText(getApplicationContext(), "Eintrag gespeichert", Toast.LENGTH_LONG).show();
+        clear();
+        Toast.makeText(getApplicationContext(), "Eintrag gespeichert", Toast.LENGTH_SHORT).show();
+        finish();
+    }//Ende save
+
+
+    //Methode zum zurücksetzen der Variablen
+    public void clear(){
+        text = "";
+        radioButtonA.setChecked(false);
+        checkedA = false;
+        radioButtonB.setChecked(false);
+        checkedB = false;
+        radioButtonC.setChecked(false);
+        checkedC = false;
+        editText.setText("");
     }
 
 }
-
