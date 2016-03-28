@@ -101,8 +101,8 @@ public class NeuesMemoActivity extends AppCompatActivity {
         //Wenn noch kein Datum gesetzt ist, wird das Datum in einer Woche gewählt
         if (currentDate == null) {
             rememberWeek();
-            //Toast kann später raus
-            Toast.makeText(getApplicationContext(), "Zukunft gesetzt", Toast.LENGTH_SHORT).show();
+            //Toast
+            Toast.makeText(getApplicationContext(), "Erinnerung in einer Woche!", Toast.LENGTH_LONG).show();
         }
 
         // Datum als String speichern
@@ -153,7 +153,7 @@ public class NeuesMemoActivity extends AppCompatActivity {
         switch (id) {
             case DATE_DIALOG_ID:
                 DatePickerDialog dialog =  new DatePickerDialog(this, datePicker, year, month, day);
-                dialog.getDatePicker().setMinDate(new DateTime().getMillis());
+                dialog.getDatePicker().setMinDate(new DateTime().getMillis()-1000);
                 return dialog;
         }
         return null;

@@ -8,17 +8,19 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/ok_btn_id"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
         android:text="@string/dialog_ds_delete"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textColor="@color/blackColor"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="20dp"/>
 
     <Button
         android:id="@+id/cancel_btn_id"
