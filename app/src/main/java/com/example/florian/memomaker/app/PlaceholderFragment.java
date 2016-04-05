@@ -51,6 +51,9 @@ public class PlaceholderFragment extends Fragment {
     // Variable für Actionmode
     public ActionMode mActionMode;
 
+    //FloatingActionMenu
+    private FloatingActionsMenu fabm;
+
     // Adaptervariablen für CustomAdapter
     ItemAdapter adapter1;
     ItemAdapter adapter2;
@@ -107,16 +110,17 @@ public class PlaceholderFragment extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_todo, container, false);
         customViewPager = (CustomViewPager) getActivity().findViewById(R.id.container);
+        fabm = (FloatingActionsMenu) getActivity().findViewById(R.id.left_labels);
 
         //Erzeugen des DatenbankManager
         dbManager = new DBManager(getContext());
+
 
         //TAB To-Do
         if(getArguments().getInt(ARG_SECTION_NUMBER) == 1){
 
             View todoView = inflater.inflate(R.layout.fragment_todo, container, false);
             listViewtodo = (ListView) todoView.findViewById(R.id.listViewTodo);
-
 
             //Laden der Daten für die aktuelle Listview aus der DB
             values = dbManager.loadTodoData();
@@ -855,7 +859,6 @@ public class PlaceholderFragment extends Fragment {
     };
 
     //Ende ActionMode
-
 
 
     public void updateTable(int id, int arch) {

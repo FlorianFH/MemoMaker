@@ -158,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
 
     //FloatingActionMenu mit Buttons
     public void fab(View v){
-
         //Nach dem Klick auf einen der Button wird das FloatingActionMenu geschlossen
         floatingActionMenu.collapse();
 
